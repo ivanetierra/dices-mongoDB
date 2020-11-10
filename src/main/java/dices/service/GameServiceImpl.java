@@ -26,11 +26,12 @@ public class GameServiceImpl implements IGameService {
 
     @Override
     public List<Game> getGamesByPlayer(Long player_id) {
-        Player myPlayer2 = iPlayerRepository.findById(player_id).get();
-        if(myPlayer2 == null) {
+        if (!iPlayerRepository.existsById(player_id)) { //si el jugador no existe, throw Exeption
             throw new PlayerNotFoundException(player_id);
         }
+        Player myPlayer2 = iPlayerRepository.findById(player_id).get();
         return iGameRepository.findByPlayer(myPlayer2);
+
     }
 
     @Override

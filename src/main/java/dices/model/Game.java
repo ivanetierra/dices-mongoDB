@@ -5,6 +5,7 @@ package dices.model;
 import javax.persistence.*;
 
 import com.mongodb.lang.NonNull;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Entity
@@ -27,6 +28,7 @@ public class Game {
 
     //@ManyToOne
     //@JoinColumn(name="player_id")
+    @DBRef(db = "player") //como FK
     private Player player;
 
     //CONSTRUCTORS

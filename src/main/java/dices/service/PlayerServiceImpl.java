@@ -42,18 +42,18 @@ public class PlayerServiceImpl implements IPlayerService {
 	@Override
 	public Player changePlayer(Player newPlayer, Long player_id) {
 
-		Player oldPlayer = iPlayerRepository.findById(player_id).get();
 		if (iPlayerRepository.existsById(player_id)) {
+			Player oldPlayer = iPlayerRepository.findById(player_id).get();
 			if (iPlayerRepository.existsByName(newPlayer.getName())
 					&& !newPlayer.getName().equalsIgnoreCase("anonymous")) {
 				throw new PlayerExistsException(newPlayer.getName());
 			}
 			oldPlayer.setName(newPlayer.getName());
+			return iPlayerRepository.save(oldPlayer);
 
 		} else {
 			throw new PlayerNotFoundException(player_id);
 		}
-		return iPlayerRepository.save(oldPlayer);
 	}
 
 	@Override
