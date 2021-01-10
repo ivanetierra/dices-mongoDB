@@ -2,6 +2,8 @@ package dices.service;
 
 import dices.exceptions.PlayerExistsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import dices.exceptions.PlayerNotFoundException;
 import dices.model.Game;
@@ -40,20 +42,22 @@ public class PlayerServiceImpl implements IPlayerService {
 	}
 
 	@Override
-	public Player changePlayer(Player newPlayer, Long player_id) {
+	public ResponseEntity<Object> changePlayer(Player newPlayer, Long player_id) {
 
 		if (iPlayerRepository.existsById(player_id)) {
 			Player oldPlayer = iPlayerRepository.findById(player_id).get();
 			if (iPlayerRepository.existsByName(newPlayer.getName())
 					&& !newPlayer.getName().equalsIgnoreCase("anonymous")) {
-				throw new PlayerExistsException(newPlayer.getName());
+				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player already exists");
 			}
 			oldPlayer.setName(newPlayer.getName());
-			return iPlayerRepository.save(oldPlayer);
+
+			return ResponseEntity.ok().body(iPlayerRepository.save(oldPlayer));
 
 		} else {
-			throw new PlayerNotFoundException(player_id);
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Player not found / wrong id");
 		}
+
 	}
 
 	@Override
